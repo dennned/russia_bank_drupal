@@ -31,7 +31,7 @@ services:
       - drupal
     restart: unless-stopped
     ports:
-      - 80:80
+      - 8099:80
     volumes:
       - drupal-data:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
