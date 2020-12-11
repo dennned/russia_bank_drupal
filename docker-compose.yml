@@ -1,61 +1,66 @@
 version: "3"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    env_file: .env
-    volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - internal
-
-  drupal:
-    image: drupal:7.77-fpm-alpine
-    container_name: drupal
-    depends_on:
-      - mysql
-    restart: unless-stopped
-    networks:
-      - internal
-      - external
-    volumes:
-      - drupal-data:/var/www/html
-
-  webserver:
-    image: nginx:1.17.4-alpine
-    container_name: webserver
-    depends_on:
-      - drupal
-    restart: unless-stopped
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/Nginx.Dockerfile
     ports:
       - 8099:80
+    container_name: nginx
+    restart: on-failure
     volumes:
-      - drupal-data:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
+      - ./:/var/www/russia_bank_docker
     networks:
-      - external
+      - mynetwork
 
-  certbot:
-    depends_on:
-      - webserver
-    image: certbot/certbot
-    container_name: certbot
+  phpfpm:
+    build:
+      context: .
+      dockerfile: docker/Fpm.Dockerfile
+    ports:
+      - 9002:9000
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - drupal-data:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email sammy@drupal.dev --agree-tos --no-eff-email --staging -d drupal.dev -d www.drupal.dev
+      - ./:/var/www/russia_bank_docker
+    container_name: phpfpm
+    networks:
+      - mynetwork
+
+  dbmysql:
+    image: mysql:8.0
+    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password' ]
+    restart: on-failure
+    ports:
+      - 33061:3306
+    container_name: dbmysql
+    networks:
+      - mynetwork
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: golb
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - data_mysql:/var/lib/mysql
+      - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    depends_on:
+      - dbmysql
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    networks:
+      - mynetwork
+    ports:
+      - 8082:80
+    environment:
+      PMA_HOST: dbmysql
+      MYSQL_ROOT_PASSWORD: root
+      PMA_ARBITRARY: 1
+    volumes:
+      - /sessions
 
 networks:
-  external:
-    driver: bridge
-  internal:
-    driver: bridge
-
+  mynetwork:
 volumes:
-  drupal-data:
-  db-data:
-  certbot-etc:
+  data_mysql:
