@@ -254,7 +254,21 @@ $databases['default']['default'] = array(
  *   );
  * @endcode
  */
-$databases = array();
+$databases = array (
+  'default' => 
+  array (
+    'default' => 
+    array (
+      'database' => 'drupal',
+      'username' => 'root',
+      'password' => 'root',
+      'host' => 'dbmysql',
+      'port' => '',
+      'driver' => 'mysql',
+      'prefix' => '',
+    ),
+  ),
+);
 
 /**
  * Quoting of identifiers in MySQL.
@@ -304,7 +318,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = '';
+$drupal_hash_salt = '2TlbWxUHh0PVPV2W1Q80Vk1xPouI7dApj_5vPYp8y84';
 
 /**
  * Base URL (optional).
