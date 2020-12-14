@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * Implements hook_views_api()
+ */
+function bank_views_api()
+{
+    return [
+        'api' => 3
+    ];
+}

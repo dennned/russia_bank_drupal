@@ -8,6 +8,7 @@
  * @return void
  */
 spl_autoload_register(function ($class) {
+
     // Project-specific namespace prefix.
     $prefix = 'Drupal\\russiabank\\';
     // Base directory for the namespace prefix.
@@ -33,15 +34,32 @@ spl_autoload_register(function ($class) {
 
 function russiabank_menu()
 {
+    $page_callback_result = call_user_func_array($router_item['page_callback']);
     return [
         'bank' => [
             'title'               => 'BANK',
-            'page callback'       => 'russiabank_page_callback',
-            'page arguments'      => [Drupal\russiabank\Controller\MainController::class . '::contextAction'],
-            'access arguments'    => ['content'],
-            'type'                => MENU_CALLBACK
+//            'page callback'       => 'Drupal\russiabank\Controller\MainController',
+//            'access callback'     => 'user_access',
+            'page callback' => 'hello_page',
+            'access callback' => 'user_access',
+            'access arguments' => array('access content'),
+//            'page arguments'      => [Drupal\russiabank\Controller\MainController::class . '::contextAction'],
+//            'access arguments'    => ['content'],
+//            'type'                => MENU_CALLBACK
+        ],
+        'test' => [
+            'title'               => 'TEST',
+            'page callback'       => '\Drupal\\russiabank\\Controller\\MainController::contextAction',
+            'access callback'  => TRUE,
         ]
     ];
+}
+
+function hello_page() {
+    return array(
+        '#type' => 'markup',
+        '#markup' => t('Hello.'),
+    );
 }
 
 function russiabank_page_callback()

@@ -1,0 +1,7 @@
+name = Bank
+description = Description of this module
+core = 7.x
+version = 7.x
+
+dependencies[] = views
+dependencies[] = xautoload (>= 7.x-5.0)
