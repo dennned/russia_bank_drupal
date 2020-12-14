@@ -1,0 +1,7 @@
+russiabank.content:
+  path: 'bank_info'
+  defaults:
+    _controller: '\Drupal\russiabank\Controller\MainController::content'
+    _title: 'Bank Info'
+  requirements:
+    _permission: 'access content'
