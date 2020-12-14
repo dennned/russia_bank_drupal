@@ -10,6 +10,7 @@ $databases['default']['default'] = array(
     'collation' => 'utf8_general_ci',
 );
 
+// $conf['theme_debug'] = true;
 /**
  * @file
  * Drupal site-specific configuration file.

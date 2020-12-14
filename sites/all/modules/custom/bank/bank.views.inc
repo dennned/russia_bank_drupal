@@ -10,7 +10,7 @@ function bank_views_data()
                 'title' => t('Title Bank Area'),
                 'help' => t('Some helps for bank area'),
                 'area' => [
-                    'handler' => 'Drupal\bank\Views\Handlers\Area\BankAreaHandler'
+                    'handler' => 'Drupal\bank\Views\Handlers\Area\BankHandler'
                 ]
             ]
         ]
