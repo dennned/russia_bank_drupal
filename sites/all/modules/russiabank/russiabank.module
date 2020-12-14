@@ -1,11 +1,5 @@
 <?php
 
-const XML_ALL_CURRENCIES = 'http://www.cbr.ru/scripts/XML_val.asp?d=0';
-const XML_DAILY_RATE = 'http://www.cbr.ru/scripts/XML_daily.asp';
-const XML_DINAMIC_RATE = 'http://www.cbr.ru/scripts/XML_dynamic.asp';
-
-const PATH_FILE = '/var/www/russia_bank/public/';
-
 /**
  * Autoloads and registers class.
  *
@@ -130,7 +124,20 @@ function test_search_form($form, &$form_state){
     ];
 
     $rows = $main->getDailyData();
-    $rows = pager_array_splice($rows, 10);
+
+    if (!empty($rows)) {
+        if ($rows['mode'] === true) {
+            unset($header);
+            $header = [
+                t('ID'),
+                t('Date'),
+                t('Nominal'),
+                t('Value'),
+            ];
+        }
+
+        $rows = pager_array_splice($rows['data'], 10);
+    }
 
     $form['table'] = array(
         '#theme' => 'table',
